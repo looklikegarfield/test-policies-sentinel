@@ -1,0 +1,15 @@
+import "tfplan-functions" as plan
+
+allInstances = plan.find_resources("google_compute_instance")
+
+allowed_disk_size = 20
+
+
+result = []
+for allInstances as address, rc {
+    if  rc["change"]["after"]["boot_disk"][0]["initialize_params"][0]["size"] >= allowed_disk_size {
+        append(result,address)
+    }
+}
+
+main = rule { length(result) is 0 }
